@@ -11,6 +11,5 @@ public class ButtonController {
     public String echoButtonName(@RequestBody String buttonName) {
         System.out.println("Received Button Name: " + buttonName);
         return "Received and echoed: " + buttonName;
-        //
     }
 }
