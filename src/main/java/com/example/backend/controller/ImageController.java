@@ -1,8 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.Entity.Daisy;
-import com.example.backend.Repository.DaisyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -10,18 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/upload")
 public class ImageController {
-
-    @Autowired
-    private DaisyRepository daisyRepository;
-
-
-
-
-
-
     @PostMapping
     public String uploadImage(@RequestParam("image") MultipartFile image, RestTemplate restTemplate) {
         if (image != null && !image.isEmpty()) {
@@ -48,39 +39,31 @@ public class ImageController {
             System.out.println("응답 코드: " + response.getStatusCode());
             System.out.println("응답 본문: " + response.getBody());
 
+            // 외부 폴더 경로 설정
+            String externalFolderPath = "C:/image"; // 실제 경로로 변경해야 합니다.
 
-            // 응답 본문이 0일 경우=데이지
-            if ("0".equals(response.getBody())) {
-
-                //이미지 데이터를 Daisy 엔티티에 저장
-//                try {
-//                    Daisy daisy = new Daisy();
-//                    daisy.setImage(image.getBytes());
-//                    daisyRepository.save(daisy);
-//                    return "이미지가 성공적으로 업로드되었습니다.";
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    return "이미지 업로드 중 오류가 발생했습니다.";
-//                }
-                System.out.println("판별완료되었으므로 이미지를 저장하려는데 크기가 너무 커서 안되는 문제");
-                System.out.println("이제 데이지의 상세정보를 리액트로 보내서 출력해야함");
+            // 외부 폴더에서 파일 목록 가져오기
+            ArrayList<String> flist = new ArrayList<>();
+            File externalFolder = new File(externalFolderPath);
+            if (externalFolder.exists() && externalFolder.isDirectory()) {
+                File[] files = externalFolder.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isFile()) {
+                            System.out.println("파일: " + file.getName());
+                        } else if (file.isDirectory()) {
+                            System.out.println("폴더: " + file.getName());
+                            flist.add(file.getName());
+                        }
+                    }
+                } else {
+                    System.err.println("폴더가 비어 있습니다.");
+                }
+            } else {
+                System.err.println("폴더가 존재하지 않거나 폴더가 아닙니다.");
             }
-
-            //응답 본문이 1일 경우=민들레
-            else if ("1".equals(response.getBody())) {
-            }
-
-            //응답 본문이 2일 경우=장미
-            else if ("2".equals(response.getBody())) {
-            }
-
-            //응답 본문이 3일 경우=해바라기
-            else if ("3".equals(response.getBody())) {
-            }
-
-            //응답 본문이 4일 경우=튤립
-            else if ("4".equals(response.getBody())) {
-            }
+            String filename = flist.get(Integer.parseInt(response.getBody()));
+            System.out.println("filname = " + filename);
 
 
             return "이미지 전송 완료"; // 성공 시 응답
