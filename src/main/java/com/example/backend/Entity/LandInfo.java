@@ -42,14 +42,15 @@ public class LandInfo {
     @Column(length = 50)
     private String tel; //전화번호
 
-    private Double lat; //위도
-
-    private Double lon; //경도
-
     @Column(length = 1000)
+    private String mapurl;
+
+    @Lob // LOB (Large Object) 타입을 사용함을 나타냅니다.
+    @Column(columnDefinition = "LONGTEXT")
     private String tinfoko; //관광지 설명
 
-    @Column(length = 1000)
+    @Lob // LOB (Large Object) 타입을 사용함을 나타냅니다.
+    @Column(columnDefinition = "LONGTEXT")
     private String tinfoen; //관광지 설명
 
 
