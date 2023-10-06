@@ -1,5 +1,9 @@
 package com.example.backend.controller;
 
+import com.example.backend.Entity.LandInfo;
+import com.example.backend.Repository.LandRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -9,10 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
-
 @RestController
 @RequestMapping("/upload")
 public class ImageController {
+
+    @Autowired
+    LandRepository landRepository;
+
+
     @PostMapping
     public String uploadImage(@RequestParam("image") MultipartFile image, RestTemplate restTemplate) {
         if (image != null && !image.isEmpty()) {
@@ -65,8 +73,18 @@ public class ImageController {
             String filename = flist.get(Integer.parseInt(response.getBody()));
             System.out.println("filname = " + filename);
 
-
-            return "이미지 전송 완료"; // 성공 시 응답
+            LandInfo landInfo =landRepository.findByNameko(filename);
+            System.out.println(landInfo);
+            try {
+                // ObjectMapper를 사용하여 객체를 JSON 문자열로 변환
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonResult = objectMapper.writeValueAsString(landInfo);
+                System.out.println(jsonResult);
+                return jsonResult;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error";
+            }
         } else {
             return "이미지를 선택하지 않았습니다.";
         }
