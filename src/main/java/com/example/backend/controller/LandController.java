@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.Entity.LandInfo;
 import com.example.backend.Repository.LandRepository;
+import com.example.backend.service.LandService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -14,14 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.ArrayList;
 @RestController
-@RequestMapping("/upload")
-public class ImageController {
+public class LandController {
 
     @Autowired
-    LandRepository landRepository;
+    LandService landService;
 
 
-    @PostMapping
+    @PostMapping("/upload")
     public String uploadImage(@RequestParam("image") MultipartFile image, RestTemplate restTemplate) {
         if (image != null && !image.isEmpty()) {
             System.out.println("업로드된 이미지 이름: " + image.getOriginalFilename());
@@ -48,7 +48,7 @@ public class ImageController {
             System.out.println("응답 본문: " + response.getBody());
 
             // 외부 폴더 경로 설정
-            String externalFolderPath = "C:/image"; // 실제 경로로 변경해야 합니다.
+            String externalFolderPath = "C:/image/upload"; // 실제 경로로 변경해야 합니다.
 
             // 외부 폴더에서 파일 목록 가져오기
             ArrayList<String> flist = new ArrayList<>();
@@ -71,9 +71,10 @@ public class ImageController {
                 System.err.println("폴더가 존재하지 않거나 폴더가 아닙니다.");
             }
             String filename = flist.get(Integer.parseInt(response.getBody()));
+            String[] filenameSplit = filename.split("_");
+            filename = filenameSplit[1];
             System.out.println("filname = " + filename);
-
-            LandInfo landInfo =landRepository.findByNameko(filename);
+            LandInfo landInfo =landService.findAllByNameKo(filename);
             System.out.println(landInfo);
             try {
                 // ObjectMapper를 사용하여 객체를 JSON 문자열로 변환

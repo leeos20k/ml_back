@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface LandRepository extends JpaRepository<LandInfo, Long> {
 
-    LandInfo findByNameko(String filename);
+    LandInfo findAllByNameKo(String filename);
 }
