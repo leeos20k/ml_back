@@ -1,8 +1,10 @@
 package com.example.backend.controller;
 
 import com.example.backend.Entity.LandInfo;
+import com.example.backend.Entity.SearchLandInfo;
 import com.example.backend.Repository.LandRepository;
 import com.example.backend.service.LandService;
+import com.example.backend.service.SearchLandinfoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -19,7 +21,8 @@ public class LandController {
 
     @Autowired
     LandService landService;
-
+    @Autowired
+    SearchLandinfoService searchLandinfoService;
 
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("image") MultipartFile image, RestTemplate restTemplate) {
@@ -75,12 +78,33 @@ public class LandController {
             filename = filenameSplit[1];
             System.out.println("filname = " + filename);
             LandInfo landInfo =landService.findAllByNameKo(filename);
-            System.out.println(landInfo);
+            System.out.println(landInfo.getLid());
+
             try {
                 // ObjectMapper를 사용하여 객체를 JSON 문자열로 변환
                 ObjectMapper objectMapper = new ObjectMapper();
                 String jsonResult = objectMapper.writeValueAsString(landInfo);
                 System.out.println(jsonResult);
+                if(jsonResult !=null){
+//                    if(userid !=null){
+//                        SearchLandInfo searchLandInfo = new SearchLandInfo();
+//                        searchLandInfo.setLandInfo(landInfo);
+//                        searchLandInfo.setMember(userid);
+//
+//                        searchLandinfoService.save(searchLandInfo);
+//                    }else{
+//                        SearchLandInfo searchLandInfo = new SearchLandInfo();
+//                        searchLandInfo.setLandInfo(landInfo);
+//                        searchLandInfo.setMember(null);
+//
+//                        searchLandinfoService.save(searchLandInfo);
+//                    }
+                    SearchLandInfo searchLandInfo = new SearchLandInfo();
+                    searchLandInfo.setLandInfo(landInfo);
+                    searchLandInfo.setMember(null);
+
+                    searchLandinfoService.save(searchLandInfo);
+                }
                 return jsonResult;
             } catch (Exception e) {
                 e.printStackTrace();
