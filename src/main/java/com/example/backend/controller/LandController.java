@@ -30,6 +30,8 @@ public class LandController {
     LandService landService;
     @Autowired
     SearchLandinfoService searchLandinfoService;
+    @Autowired
+    MemberService memberService;
 
     @GetMapping("/")
     public List<SearchLandInfo> home() {
@@ -38,10 +40,6 @@ public class LandController {
         System.out.println(list.get(0).getLandInfo().getAddressEn());
         return list;
     }
-
-    @Autowired
-    MemberService memberService;
-
 
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("image") MultipartFile image,@RequestParam("login") String login, RestTemplate restTemplate) {
@@ -119,14 +117,25 @@ public class LandController {
 //
 //                        searchLandinfoService.save(searchLandInfo);
 //                    }
-                    System.out.println("test1111"+login);
+//                    System.out.println("test1111"+login.equals(null));
+//                    System.out.println("test1111"+login == null);
+//                    System.out.println("test1111"+login.equals("null"));
+//                    System.out.println("test1111"+login == "null");
+//                    System.out.println("test1111"+login);
+                    if(login.equals("null")){
+                        SearchLandInfo searchLandInfo = new SearchLandInfo();
+                        searchLandInfo.setLandInfo(landInfo);
+                        searchLandInfo.setMember(null);
+                        searchLandinfoService.save(searchLandInfo);
+                    }else{
+                        Member member = memberService.findByMid(Long.valueOf(login));
 
-                    Member member = memberService.findByMid(Long.valueOf(login));
+                        SearchLandInfo searchLandInfo = new SearchLandInfo();
+                        searchLandInfo.setLandInfo(landInfo);
+                        searchLandInfo.setMember(member);
+                        searchLandinfoService.save(searchLandInfo);
+                    }
 
-                    SearchLandInfo searchLandInfo = new SearchLandInfo();
-                    searchLandInfo.setLandInfo(landInfo);
-                    searchLandInfo.setMember(member);
-                    searchLandinfoService.save(searchLandInfo);
                 }
                 return jsonResult;
             } catch (Exception e) {
@@ -136,5 +145,13 @@ public class LandController {
         } else {
             return "이미지를 선택하지 않았습니다.";
         }
+    }
+    @PostMapping("/del")
+    public String del(@RequestParam("index") String index ) {
+        System.out.println(index);
+        Long slid = Long.parseLong(index);
+        System.out.println(slid);
+        searchLandinfoService.deleteBySlid(slid);
+        return "삭제 성공";
     }
 }

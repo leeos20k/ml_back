@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SearchLandInfoRepository extends JpaRepository<SearchLandInfo, Long> {
-
+    void deleteBySlid(Long slid);
 }

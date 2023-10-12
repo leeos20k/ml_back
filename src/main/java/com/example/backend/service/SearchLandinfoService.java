@@ -17,6 +17,10 @@ public class SearchLandinfoService {
     @Autowired
     SearchLandInfoRepository searchLandInfoRepository;
 
+    public void deleteBySlid(Long slid) {
+        searchLandInfoRepository.deleteBySlid(slid);
+    }
+
     public void save(SearchLandInfo searchLandInfo){
         searchLandInfoRepository.save(searchLandInfo);
     }
