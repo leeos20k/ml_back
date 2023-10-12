@@ -7,7 +7,9 @@ import com.example.backend.Repository.LandRepository;
 import com.example.backend.service.LandService;
 import com.example.backend.service.MemberService;
 import com.example.backend.service.SearchLandinfoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @RestController
 public class LandController {
 
@@ -25,8 +30,18 @@ public class LandController {
     LandService landService;
     @Autowired
     SearchLandinfoService searchLandinfoService;
+
+    @GetMapping("/")
+    public List<SearchLandInfo> home() {
+        List<SearchLandInfo> list =  searchLandinfoService.findAll();
+        System.out.println(list);
+        System.out.println(list.get(0).getLandInfo().getAddressEn());
+        return list;
+    }
+
     @Autowired
     MemberService memberService;
+
 
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("image") MultipartFile image,@RequestParam("login") String login, RestTemplate restTemplate) {

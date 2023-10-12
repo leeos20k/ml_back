@@ -1,5 +1,16 @@
 package com.example.backend.Repository;
 
+
+import com.example.backend.Entity.LandInfo;
+import com.example.backend.Entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Long> {
+
+}
+
 import com.example.backend.Entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,3 +23,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByMid(Long id);
     // 그 외 사용자와 관련된 커스텀 메소드를 필요에 따라 추가할 수 있습니다.
 }
+
