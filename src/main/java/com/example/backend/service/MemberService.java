@@ -14,9 +14,16 @@ public class MemberService {
     @Autowired
     MemberRepository memberRepository;
 
+
     public void save(Member member){
         memberRepository.save(member);
     }
 
+
+
+    public Member findByMid(Long id){
+
+        return memberRepository.findByMid(id);
+    }
 
 }

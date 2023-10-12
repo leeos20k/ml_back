@@ -1,9 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.backend.Entity.LandInfo;
+import com.example.backend.Entity.Member;
 import com.example.backend.Entity.SearchLandInfo;
 import com.example.backend.Repository.LandRepository;
 import com.example.backend.service.LandService;
+import com.example.backend.service.MemberService;
 import com.example.backend.service.SearchLandinfoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +30,7 @@ public class LandController {
     LandService landService;
     @Autowired
     SearchLandinfoService searchLandinfoService;
+
     @GetMapping("/")
     public List<SearchLandInfo> home() {
         List<SearchLandInfo> list =  searchLandinfoService.findAll();
@@ -36,10 +39,15 @@ public class LandController {
         return list;
     }
 
+    @Autowired
+    MemberService memberService;
+
+
     @PostMapping("/upload")
-    public String uploadImage(@RequestParam("image") MultipartFile image, RestTemplate restTemplate) {
+    public String uploadImage(@RequestParam("image") MultipartFile image,@RequestParam("login") String login, RestTemplate restTemplate) {
         if (image != null && !image.isEmpty()) {
             System.out.println("업로드된 이미지 이름: " + image.getOriginalFilename());
+            System.out.println("로그인 상태: "+login);
 
             // 이미지를 전송할 URL
             String uploadUrl = "http://localhost:8000/upload"; // 여기에 실제 엔드포인트를 넣으세요.
@@ -111,10 +119,13 @@ public class LandController {
 //
 //                        searchLandinfoService.save(searchLandInfo);
 //                    }
+                    System.out.println("test1111"+login);
+
+                    Member member = memberService.findByMid(Long.valueOf(login));
+
                     SearchLandInfo searchLandInfo = new SearchLandInfo();
                     searchLandInfo.setLandInfo(landInfo);
-                    searchLandInfo.setMember(null);
-
+                    searchLandInfo.setMember(member);
                     searchLandinfoService.save(searchLandInfo);
                 }
                 return jsonResult;
