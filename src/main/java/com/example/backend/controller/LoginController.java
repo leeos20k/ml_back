@@ -21,7 +21,7 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<String> loginUser(@RequestBody Member member) {
+    public Member loginUser(@RequestBody Member member) {
         String username = member.getMname();
         String tel = member.getMtel();
 
@@ -33,12 +33,10 @@ public class LoginController {
         System.out.println(existingMember);
         String midValue = String.valueOf(existingMember.getMid());
         System.out.println(midValue);
-        if (midValue != null) {
-            // 사용자가 존재하면 성공적인 로그인 응답
-            return ResponseEntity.ok(midValue);
-        } else {
-            // 사용자가 존재하지 않으면 로그인 실패 응답
-            return ResponseEntity.badRequest().body("로그인 실패");
-        }
+//        if (midValue != null) {
+//            // 사용자가 존재하면 성공적인 로그인 응답
+//
+//        }
+        return existingMember;
     }
 }
